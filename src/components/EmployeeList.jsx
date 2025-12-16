@@ -4,23 +4,38 @@ import api from "../api/api";
 function EmployeeList({ refreshKey }) {
   const [employees, setEmployees] = useState([]);
   const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
-    const empRes = await api.get("/employees");
-    const taskRes = await api.get("/tasks");
-
+    setLoading(true);
+    const [empRes, taskRes] = await Promise.all([
+      api.get("/employees"),
+      api.get("/tasks"),
+    ]);
     setEmployees(empRes.data);
     setTasks(taskRes.data);
+    setLoading(false);
   };
 
   const updateTaskStatus = async (taskId, status) => {
     await api.put(`/tasks/${taskId}/status?status=${status}`);
-    fetchData(); // refresh after transition
+    fetchData();
   };
 
   useEffect(() => {
     fetchData();
   }, [refreshKey]);
+
+  if (loading) {
+    return (
+      <div>
+        <h3>Employees</h3>
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="list-item skeleton skeleton-card" />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -45,13 +60,11 @@ function EmployeeList({ refreshKey }) {
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
-                        alignItems: "center",
                         marginTop: "6px",
                       }}
                     >
                       <span>
-                        {task.title} —{" "}
-                        <strong>{task.status}</strong>
+                        {task.title} — <strong>{task.status}</strong>
                       </span>
 
                       <span>
