@@ -1,0 +1,101 @@
+/* ===== GLOBAL ===== */
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f4f6f8;
+}
+
+/* ===== NAVBAR (STICKY) ===== */
+
+.navbar {
+  position: sticky;       /* ✅ THIS IS THE KEY */
+  top: 0;
+  z-index: 1000;
+
+  height: 60px;
+  background-color: #2c3e50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-brand {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 20px;
+}
+
+.navbar-links a {
+  color: #ecf0f1;
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 15px;
+}
+
+.navbar-links a:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.navbar-links a.active {
+  background-color: #1abc9c;
+  color: white;
+}
+
+/* ===== LAYOUT ===== */
+
+.container {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+/* ===== CARDS ===== */
+
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== FORMS ===== */
+
+.form-row {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.form-row input {
+  flex: 1;
+  padding: 8px;
+}
+
+.form-row button {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+/* ===== LISTS ===== */
+
+.list-container {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.list-item {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
