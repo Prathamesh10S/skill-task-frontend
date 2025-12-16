@@ -1,7 +1,0 @@
-{
-  "deploy": {
-    "static": {
-      "fallback": "index.html"
-    }
-  }
-}
