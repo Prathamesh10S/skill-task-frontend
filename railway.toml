@@ -1,5 +1,5 @@
 [build]
-command = "npm install && npm run build"
+command = "npm run build"
 
-[deploy]
-startCommand = "npx serve -s dist"
+[start]
+command = "npx serve -s dist"
