@@ -2,4 +2,4 @@
 command = "npm install && npm run build"
 
 [start]
-command = "node server.js"
+command = "npm run start"
