@@ -8,11 +8,11 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve static files
+// Serve static assets
 app.use(express.static(path.join(__dirname, "dist")));
 
-// SPA fallback (CRITICAL)
-app.get("*", (req, res) => {
+// ✅ Express 5–safe SPA fallback
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
