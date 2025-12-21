@@ -4,42 +4,53 @@ import api from "../api/api";
 function EmployeeList({ refreshKey }) {
   const [employees, setEmployees] = useState([]);
   const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // 🔐 Check admin status
+  const isAdmin = !!localStorage.getItem("ADMIN_KEY");
 
   const fetchData = async () => {
-    setLoading(true);
-    const [empRes, taskRes] = await Promise.all([
-      api.get("/employees"),
-      api.get("/tasks"),
-    ]);
-    setEmployees(empRes.data);
-    setTasks(taskRes.data);
-    setLoading(false);
+    try {
+      const empRes = await api.get("/employees");
+      const taskRes = await api.get("/tasks");
+
+      setEmployees(empRes.data);
+      setTasks(taskRes.data);
+      setError("");
+    } catch (err) {
+      setError("❌ Failed to load data");
+    }
   };
 
   const updateTaskStatus = async (taskId, status) => {
-    await api.put(`/tasks/${taskId}/status?status=${status}`);
-    fetchData();
+    if (!isAdmin) {
+      alert("❌ You are not authorized to update task status");
+      return;
+    }
+
+    try {
+      await api.put(`/tasks/${taskId}/status?status=${status}`);
+      fetchData(); // refresh after update
+    } catch (err) {
+      alert("❌ Authorization failed");
+    }
   };
 
   useEffect(() => {
     fetchData();
   }, [refreshKey]);
 
-  if (loading) {
-    return (
-      <div>
-        <h3>Employees</h3>
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="list-item skeleton skeleton-card" />
-        ))}
-      </div>
-    );
-  }
-
   return (
     <div>
       <h3>Employees</h3>
+
+      {!isAdmin && (
+        <p style={{ color: "#b45309", marginBottom: "10px" }}>
+          🔒 Public view enabled (read-only)
+        </p>
+      )}
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div className="list-container">
         {employees.map((emp) => {
@@ -60,34 +71,39 @@ function EmployeeList({ refreshKey }) {
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
+                        alignItems: "center",
                         marginTop: "6px",
                       }}
                     >
                       <span>
-                        {task.title} — <strong>{task.status}</strong>
+                        {task.title} —{" "}
+                        <strong>{task.status}</strong>
                       </span>
 
-                      <span>
-                        {task.status === "ASSIGNED" && (
-                          <button
-                            onClick={() =>
-                              updateTaskStatus(task.id, "IN_PROGRESS")
-                            }
-                          >
-                            In Progress
-                          </button>
-                        )}
+                      {/* 🔐 Admin-only actions */}
+                      {isAdmin && (
+                        <span>
+                          {task.status === "ASSIGNED" && (
+                            <button
+                              onClick={() =>
+                                updateTaskStatus(task.id, "IN_PROGRESS")
+                              }
+                            >
+                              In Progress
+                            </button>
+                          )}
 
-                        {task.status === "IN_PROGRESS" && (
-                          <button
-                            onClick={() =>
-                              updateTaskStatus(task.id, "COMPLETED")
-                            }
-                          >
-                            Complete
-                          </button>
-                        )}
-                      </span>
+                          {task.status === "IN_PROGRESS" && (
+                            <button
+                              onClick={() =>
+                                updateTaskStatus(task.id, "COMPLETED")
+                              }
+                            >
+                              Complete
+                            </button>
+                          )}
+                        </span>
+                      )}
                     </div>
                   ))}
                 </div>

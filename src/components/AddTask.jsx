@@ -4,19 +4,29 @@ import api from "../api/api";
 function AddTask({ onTaskAdded }) {
   const [title, setTitle] = useState("");
   const [skill, setSkill] = useState("");
+  const [error, setError] = useState("");
+
+  const isAdmin = !!localStorage.getItem("ADMIN_KEY");
 
   const createTask = async () => {
-    if (!title || !skill) return;
+    if (!isAdmin) {
+      setError("❌ You are not authorized to create tasks");
+      return;
+    }
 
-    await api.post("/tasks", {
-      title,
-      requiredSkill: skill,
-    });
+    try {
+      await api.post("/tasks", {
+        title,
+        requiredSkill: skill,
+      });
 
-    setTitle("");
-    setSkill("");
-
-    onTaskAdded(); // auto refresh
+      setTitle("");
+      setSkill("");
+      setError("");
+      onTaskAdded();
+    } catch (err) {
+      setError("❌ Authorization failed");
+    }
   };
 
   return (
@@ -38,6 +48,8 @@ function AddTask({ onTaskAdded }) {
 
         <button onClick={createTask}>Create</button>
       </div>
+
+      {error && <p style={{ color: "red", marginTop: "8px" }}>{error}</p>}
     </div>
   );
 }

@@ -3,34 +3,14 @@ import api from "../api/api";
 
 function TaskList({ refreshKey }) {
   const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchTasks = async () => {
-    setLoading(true);
-    const res = await api.get("/tasks");
-    setTasks(res.data);
-    setLoading(false);
-  };
 
   useEffect(() => {
-    fetchTasks();
+    api.get("/tasks").then((res) => setTasks(res.data));
   }, [refreshKey]);
-
-  if (loading) {
-    return (
-      <div>
-        <h3>All Tasks (Overview)</h3>
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="list-item skeleton skeleton-card" />
-        ))}
-      </div>
-    );
-  }
 
   return (
     <div>
-      <h3>All Tasks (Overview)</h3>
-
+      <h3>All Tasks</h3>
       <div className="list-container">
         {tasks.map((t) => (
           <div key={t.id} className="list-item">

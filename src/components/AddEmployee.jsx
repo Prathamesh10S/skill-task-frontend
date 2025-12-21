@@ -4,19 +4,25 @@ import api from "../api/api";
 function AddEmployee({ onEmployeeAdded }) {
   const [name, setName] = useState("");
   const [skills, setSkills] = useState("");
+  const [error, setError] = useState("");
+
+  const isAdmin = !!localStorage.getItem("ADMIN_KEY");
 
   const addEmployee = async () => {
-    if (!name || !skills) return;
+    if (!isAdmin) {
+      setError("❌ You are not authorized to add employees");
+      return;
+    }
 
-    await api.post("/employees", {
-      name,
-      skills,
-    });
-
-    setName("");
-    setSkills("");
-
-    onEmployeeAdded(); // refresh list automatically
+    try {
+      await api.post("/employees", { name, skills });
+      setName("");
+      setSkills("");
+      setError("");
+      onEmployeeAdded();
+    } catch (err) {
+      setError("❌ Authorization failed");
+    }
   };
 
   return (
@@ -38,6 +44,8 @@ function AddEmployee({ onEmployeeAdded }) {
 
         <button onClick={addEmployee}>Add</button>
       </div>
+
+      {error && <p style={{ color: "red", marginTop: "8px" }}>{error}</p>}
     </div>
   );
 }
