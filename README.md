@@ -27,7 +27,7 @@ a clear separation between public read-only access and restricted administrative
 This application is deployed in **read-only mode for public users** while protecting
 all data-modifying operations.
 
-### ✅ Public (No Authorization Required)
+## ✅ Public (No Authorization Required)
 Anyone can:
 - View employees
 - View tasks
@@ -35,7 +35,7 @@ Anyone can:
 
 These operations use **GET APIs** and are intentionally public.
 
-### 🔒 Admin-Only (Write Operations)
+## 🔒 Admin-Only (Write Operations)
 The following operations are **restricted**:
 - Add employee
 - Create task
@@ -45,7 +45,6 @@ The following operations are **restricted**:
 All write operations are enforced **server-side** using an admin authorization key
 passed via request headers. This ensures production data cannot be modified by
 unauthorized users, even if the frontend is tampered with.
-
 
 ## Admin Access (Demo Mode)
 
