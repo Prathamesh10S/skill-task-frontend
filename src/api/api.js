@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: "https://skill-task-backend-production.up.railway.app/api",
 });
 
 // 🔐 Attach ADMIN key automatically (if present)
